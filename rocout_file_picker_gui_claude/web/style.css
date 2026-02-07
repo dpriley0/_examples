@@ -1,0 +1,139 @@
+/* =============================================================
+   style.css — Minimal styling for the New Project demo.
+
+   DESIGN NOTES:
+   - Dark theme (aerospace / mission-control aesthetic)
+   - Minimal — just enough to look intentional, not fancy
+   - Uses CSS custom properties (variables) so your real app
+     can swap themes easily later
+   ============================================================= */
+
+/* --- Theme Variables --- */
+:root {
+    --bg-primary:    #1a1d23;
+    --bg-secondary:  #24282f;
+    --bg-card:       #2a2f38;
+    --text-primary:  #e0e4e8;
+    --text-secondary:#8a919c;
+    --accent:        #4ea8de;
+    --accent-hover:  #3d8abf;
+    --border:        #3a3f4a;
+    --radius:        6px;
+}
+
+/* --- Reset & Base --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* --- Toolbar / Header --- */
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 24px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.app-title {
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+}
+
+/* --- Primary Button --- */
+.btn-primary {
+    padding: 8px 20px;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.btn-primary:hover {
+    background: var(--accent-hover);
+}
+
+.btn-primary:active {
+    transform: scale(0.98);
+}
+
+/* --- Main Content Area --- */
+.content {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px;
+}
+
+/* --- Project Info Card --- */
+.project-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 28px 36px;
+    min-width: 480px;
+}
+
+.project-card h2 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border);
+}
+
+.info-row {
+    display: flex;
+    gap: 16px;
+    padding: 8px 0;
+}
+
+.info-row .label {
+    font-weight: 500;
+    color: var(--text-secondary);
+    min-width: 140px;
+    flex-shrink: 0;
+}
+
+.info-row .value {
+    color: var(--text-primary);
+    word-break: break-all; /* long paths won't overflow */
+}
+
+/* --- Empty State (no project loaded) --- */
+.empty-state {
+    text-align: center;
+    color: var(--text-secondary);
+    line-height: 1.8;
+}
+
+.empty-state strong {
+    color: var(--accent);
+}
+
+/* --- Utility: Hidden toggle --- */
+.hidden {
+    display: none !important;
+}

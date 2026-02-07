@@ -1,0 +1,61 @@
+# ==================================================================================== #
+#  In a .gitignore file, the double asterisk (**) is a powerful wildcard that          #
+#  matches zero or more directories. It is used to create recursive patterns           #
+#  that can ignore files in nested subdirectories.                                     #
+#                                                                                      #
+#  The meaning of the double asterisk depends on its position within a pattern.        #
+#                                                                                      #
+#  **/ (Leading double asterisk)                                                       #
+#    A leading **/ followed by a file or directory name will match that item any-      #
+#    where in the repository's directory structure. This is useful for ignoring a      #
+#    file or folder regardless of how deeply nested it is.                             #
+#      • Pattern: **/temp                                                              #
+#      • Matches: temp (at the root), build/temp, src/app/temp                         #
+#                                                                                      #
+#                                                                                      #
+#  /** (Trailing double asterisk)                                                      #
+#    A trailing /** at the end of a directory name matches all files and subdirec-     #
+#    tories inside that directory, and all files in nested directories.                #
+#      • Pattern: logs/**                                                              #
+#      • Matches: logs/debug.log, logs/production/error.log, logs/archive/old/log.txt  #
+#                                                                                      #
+#                                                                                      #
+#  /**/ (Double asterisk between slashes)                                              #
+#    When placed between two slashes, a double asterisk matches zero or more inter-    #
+#    mediate directories.                                                              #
+#      • Pattern: a/**/b                                                               #
+#      • Matches: a/b, a/x/b, a/x/y/b                                                  #
+#      • Purpose: This is helpful for ignoring files with a specific name that appear  #
+#                 anywhere within a particular subdirectory tree.                      #
+#        • Example: logs/**/*.log ignores all files ending in .log inside the logs     #
+#                   directory and all of its subdirectories.                           #
+#                                                                                      #
+#                                                                                      #
+#  Comparison: * vs **                                                                 #
+#     * : NON-recursive and only matches characters within a single directory segment. #
+#    ** : RECURSIVE and can cross directory boundaries.                                #
+#                                                                                      #
+# ==================================================================================== #
+
+## IDE / project metadata
+.spyproject/
+.spyproject/**
+__pycache__/
+__pycache__/**
+.DS_Store/
+.DS_Store/**
+
+## Ignore all Excel files, logs, binaries, temp/intermediate, etc. files everywhere
+**/*.xlsx
+**/*.xlsm
+**/*.exe
+**/*.987
+**/*.log
+**/*.pyc
+**/*.mm
+**/*.obj
+**/*.for
+**/*.FOR
+**/*.docx
+**/*.DOCX
+**/*.ps1

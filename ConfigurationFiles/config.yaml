@@ -1,0 +1,13 @@
+engine_parameters:
+  chamber_pressure: 2000000
+  nozzle_expansion_ratio: 25
+  propellant_flow_rate: 100.5
+paths:
+  input_data: /new/experiment/data
+  log_directory: /path/to/logs
+  output_results: /path/to/output/results
+  rocets_models: /path/to/rocets/models
+settings:
+  debug_mode: true
+  max_iterations: 2000
+  tolerance: 0.0001

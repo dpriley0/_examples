@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROCETS GUI — New Project Demo</title>
+
+    <!-- Eel's JS bridge (REQUIRED — this is how JS talks to Python) -->
+    <script type="text/javascript" src="/eel.js"></script>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- ============================================================
+         HEADER BAR
+         Why a separate header? In your real app, this becomes the
+         toolbar/menu bar. Keeping it in its own container makes it
+         easy to add more buttons later without touching the layout.
+    ============================================================ -->
+    <header class="toolbar">
+        <h1 class="app-title">ROCETS GUI</h1>
+        <button id="btn-new-project" class="btn-primary">
+            &#128194; New Project
+        </button>
+    </header>
+
+    <!-- ============================================================
+         MAIN CONTENT AREA
+         For now, this just shows the result of the "New Project"
+         action. In your real app, this becomes the split-pane layout
+         (tool pane + schematic view) we built previously.
+    ============================================================ -->
+    <main class="content">
+
+        <!-- This panel is HIDDEN until a project is created -->
+        <div id="project-info" class="project-card hidden">
+            <h2>Active Project</h2>
+            <div class="info-row">
+                <span class="label">Project Name:</span>
+                <span id="display-project-name" class="value">—</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Model Directory:</span>
+                <span id="display-model-dir" class="value">—</span>
+            </div>
+            <div class="info-row">
+                <span class="label">Created At:</span>
+                <span id="display-created-at" class="value">—</span>
+            </div>
+        </div>
+
+        <!-- Shown when no project is loaded yet -->
+        <div id="no-project" class="empty-state">
+            <p>No project loaded.</p>
+            <p>Click <strong>New Project</strong> to get started.</p>
+        </div>
+
+    </main>
+
+    <!-- Load our app logic AFTER the DOM is ready -->
+    <script src="js/app.js"></script>
+
+</body>
+</html>

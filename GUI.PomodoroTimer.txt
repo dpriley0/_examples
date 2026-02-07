@@ -1,0 +1,8 @@
+https://medium.com/@fidel.esquivelestay/build-a-pomodoro-timer-using-python-d52509730f60
+
+1. Running the app in the background
+To run the app as a background process, change the python
+extension from pomodoro.py to pomodoro.pyw. This simple trick
+allows for your program to run from hidden command prompt,
+and prevents you from accidentally closing it. Now you can
+double-click on the file, and your timer will open!
