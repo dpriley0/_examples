@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROCETS-Style Layer Management with Fabric.js</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/5.3.0/fabric.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f0f0f0;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .controls {
+            padding: 20px;
+            background: #2c3e50;
+            color: white;
+        }
+        
+        .controls h3 {
+            margin: 0 0 15px 0;
+            color: #ecf0f1;
+        }
+        
+        .layer-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .layer-group {
+            background: #34495e;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .layer-group h4 {
+            margin: 0 0 10px 0;
+            color: #3498db;
+            font-size: 14px;
+        }
+        
+        .layer-toggle {
+            display: flex;
+            align-items: center;
+            margin: 5px 0;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .layer-toggle:hover {
+            background: #2c3e50;
+        }
+        
+        .layer-toggle input[type="checkbox"] {
+            margin-right: 8px;
+        }
+        
+        .layer-toggle label {
+            cursor: pointer;
+            font-size: 13px;
+        }
+        
+        .canvas-container {
+            position: relative;
+            height: 600px;
+            border-top: 2px solid #bdc3c7;
+        }
+        
+        .info-panel {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(52, 73, 94, 0.9);
+            color: white;
+            padding: 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            max-width: 250px;
+        }
+        
+        .info-panel h4 {
+            margin: 0 0 8px 0;
+            color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="controls">
+            <h3>🚀 ROCETS Engine Schematic Layers</h3>
+            <div class="layer-controls">
+                <div class="layer-group">
+                    <h4>🔥 Propellant Systems</h4>
+                    <div class="layer-toggle">
+                        <input type="checkbox" id="fuel-layer" checked>
+                        <label for="fuel-layer">Fuel Side</label>
+                    </div>
+                    <div class="layer-toggle">
+                        <input type="checkbox" id="ox-layer" checked>
+                        <label for="ox-layer">Oxidizer Side</label>
+                    </div>
+                </div>
+                
+                <div class="layer-group">
+                    <h4>⚙️ Engine Components</h4>
+                    <div class="layer-toggle">
+                        <input type="checkbox" id="combustion-layer" checked>
+                        <label for="combustion-layer">Combustion Devices</label>
+                    </div>
+                    <div class="layer-toggle">
+                        <input type="checkbox" id="turbomachinery-layer" checked>
+                        <label for="turbomachinery-layer">Turbomachinery</label>
+                    </div>
+                </div>
+                
+                <div class="layer-group">
+                    <h4>📊 Data Overlay</h4>
+                    <div class="layer-toggle">
+                        <input type="checkbox" id="pressure-data" checked>
+                        <label for="pressure-data">Pressure Data</label>
+                    </div>
+                    <div class="layer-toggle">
+                        <input type="checkbox" id="temperature-data" checked>
+                        <label for="temperature-data">Temperature Data</label>
+                    </div>
+                    <div class="layer-toggle">
+                        <input type="checkbox" id="flow-data" checked>
+                        <label for="flow-data">Flow Rate Data</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="engine-schematic" width="1160" height="600"></canvas>
+            <div class="info-panel">
+                <h4>Layer Management Demo</h4>
+                <p>This demonstrates how Fabric.js can manage independent layers for your ROCETS GUI:</p>
+                <ul style="margin: 8px 0; padding-left: 16px; font-size: 11px;">
+                    <li>Each system component is on its own layer</li>
+                    <li>Data boxes overlay the schematic</li>
+                    <li>Layers can be toggled independently</li>
+                    <li>Perfect foundation for plugin architecture</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Fabric.js canvas
+        const canvas = new fabric.Canvas('engine-schematic', {
+            backgroundColor: '#ecf0f1'
+        });
+
+        // Layer management system
+        const layers = {
+            'fuel-layer': [],
+            'ox-layer': [],
+            'combustion-layer': [],
+            'turbomachinery-layer': [],
+            'pressure-data': [],
+            'temperature-data': [],
+            'flow-data': []
+        };
+
+        // Create fuel system components
+        function createFuelSystem() {
+            const fuelTank = new fabric.Rect({
+                left: 50,
+                top: 100,
+                width: 80,
+                height: 120,
+                fill: '#e74c3c',
+                stroke: '#c0392b',
+                strokeWidth: 2,
+                rx: 10,
+                ry: 10
+            });
+            
+            const fuelLine = new fabric.Line([130, 160, 300, 160], {
+                stroke: '#e74c3c',
+                strokeWidth: 6,
+                strokeLineCap: 'round'
+            });
+            
+            const fuelPump = new fabric.Circle({
+                left: 200,
+                top: 140,
+                radius: 20,
+                fill: '#e74c3c',
+                stroke: '#c0392b',
+                strokeWidth: 2
+            });
+
+            layers['fuel-layer'] = [fuelTank, fuelLine, fuelPump];
+            layers['fuel-layer'].forEach(obj => canvas.add(obj));
+        }
+
+        // Create oxidizer system components
+        function createOxidizerSystem() {
+            const oxTank = new fabric.Rect({
+                left: 50,
+                top: 300,
+                width: 80,
+                height: 120,
+                fill: '#3498db',
+                stroke: '#2980b9',
+                strokeWidth: 2,
+                rx: 10,
+                ry: 10
+            });
+            
+            const oxLine = new fabric.Line([130, 360, 300, 360], {
+                stroke: '#3498db',
+                strokeWidth: 6,
+                strokeLineCap: 'round'
+            });
+            
+            const oxPump = new fabric.Circle({
+                left: 200,
+                top: 340,
+                radius: 20,
+                fill: '#3498db',
+                stroke: '#2980b9',
+                strokeWidth: 2
+            });
+
+            layers['ox-layer'] = [oxTank, oxLine, oxPump];
+            layers['ox-layer'].forEach(obj => canvas.add(obj));
+        }
+
+        // Create combustion components
+        function createCombustionSystem() {
+            const combustor = new fabric.Ellipse({
+                left: 300,
+                top: 200,
+                rx: 60,
+                ry: 80,
+                fill: '#f39c12',
+                stroke: '#e67e22',
+                strokeWidth: 3
+            });
+            
+            const nozzle = new fabric.Triangle({
+                left: 400,
+                top: 230,
+                width: 100,
+                height: 60,
+                fill: '#95a5a6',
+                stroke: '#7f8c8d',
+                strokeWidth: 2
+            });
+
+            layers['combustion-layer'] = [combustor, nozzle];
+            layers['combustion-layer'].forEach(obj => canvas.add(obj));
+        }
+
+        // Create turbomachinery
+        function createTurbomachinery() {
+            const turbine = new fabric.Circle({
+                left: 550,
+                top: 200,
+                radius: 40,
+                fill: '#9b59b6',
+                stroke: '#8e44ad',
+                strokeWidth: 3
+            });
+            
+            const shaft = new fabric.Line([590, 240, 590, 400], {
+                stroke: '#2c3e50',
+                strokeWidth: 8,
+                strokeLineCap: 'round'
+            });
+
+            layers['turbomachinery-layer'] = [turbine, shaft];
+            layers['turbomachinery-layer'].forEach(obj => canvas.add(obj));
+        }
+
+        // Create data overlays (simulating ROCETS output)
+        function createDataOverlays() {
+            // Pressure data boxes
+            const pressureBox1 = createDataBox(180, 80, 'P1\n150 psia', '#e74c3c');
+            const pressureBox2 = createDataBox(380, 180, 'Pc\n2500 psia', '#f39c12');
+            layers['pressure-data'] = [pressureBox1, pressureBox2];
+            
+            // Temperature data boxes
+            const tempBox1 = createDataBox(280, 120, 'T1\n-320°F', '#3498db');
+            const tempBox2 = createDataBox(450, 220, 'Tc\n6000°F', '#e67e22');
+            layers['temperature-data'] = [tempBox1, tempBox2];
+            
+            // Flow rate data boxes
+            const flowBox1 = createDataBox(80, 50, 'ṁf\n45.2 lbm/s', '#27ae60');
+            const flowBox2 = createDataBox(80, 450, 'ṁox\n156.8 lbm/s', '#16a085');
+            layers['flow-data'] = [flowBox1, flowBox2];
+            
+            // Add all data boxes to canvas
+            [...layers['pressure-data'], ...layers['temperature-data'], ...layers['flow-data']]
+                .forEach(obj => canvas.add(obj));
+        }
+
+        function createDataBox(x, y, text, color) {
+            const group = new fabric.Group([], {
+                left: x,
+                top: y
+            });
+            
+            const box = new fabric.Rect({
+                width: 70,
+                height: 40,
+                fill: 'rgba(255, 255, 255, 0.95)',
+                stroke: color,
+                strokeWidth: 2,
+                rx: 4,
+                ry: 4
+            });
+            
+            const label = new fabric.Text(text, {
+                fontSize: 11,
+                fontFamily: 'monospace',
+                fill: '#2c3e50',
+                textAlign: 'center',
+                originX: 'center',
+                originY: 'center',
+                left: 35,
+                top: 20
+            });
+            
+            group.addWithUpdate(box);
+            group.addWithUpdate(label);
+            return group;
+        }
+
+        // Layer toggle functionality
+        function setupLayerToggles() {
+            Object.keys(layers).forEach(layerId => {
+                const checkbox = document.getElementById(layerId);
+                checkbox.addEventListener('change', (e) => {
+                    const isVisible = e.target.checked;
+                    layers[layerId].forEach(obj => {
+                        obj.set('visible', isVisible);
+                    });
+                    canvas.renderAll();
+                });
+            });
+        }
+
+        // Initialize the schematic
+        function initializeSchematic() {
+            createFuelSystem();
+            createOxidizerSystem();
+            createCombustionSystem();
+            createTurbomachinery();
+            createDataOverlays();
+            setupLayerToggles();
+            
+            // Add some visual flair
+            canvas.renderAll();
+        }
+
+        // Start the demo
+        initializeSchematic();
+    </script>
+</body>
+</html>
