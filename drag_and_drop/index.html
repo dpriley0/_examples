@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Schematic</title>
+        <link rel="stylesheet" href="styles.css" />
+        <script src="script.js"></script>
+
+        <style>
+            body {
+                background-color: #024;
+            }
+
+            .node {
+                cursor: move;
+            }
+
+            .edge {
+                fill: none;
+                stroke: turquoise;
+                stroke-width: 2;
+            }
+
+            #ClickMe {
+                color: coral;
+                font-family: "nasalization", "Verdana", "Geneva", "Ubuntu";
+                font-size: 4rem;
+                border-radius: 1.5rem;
+                position: fixed;
+                top: 400px;
+                left: 800px;
+            }
+
+            #ClickMe:hover {
+                background-color: azure;
+                box-shadow: inset;
+            }
+        </style>
+    </head>
+
+    <body style="margin: 0">
+        <button id="ClickMe" onclick="buttonClicked()">Click me</button>
+        <div id="viewport" style="position: relative; height: 100vh">
+            
+            <svg id="schematic" width="100%" height="100%">
+                <g id="layer-connectors"></g>
+                <g id="layer-shapes"></g>
+            </svg>
+            
+        </div>
+        
+        <script>
+            const svgNS = "http://www.w3.org/2000/svg";
+            const $ = (sel) => document.querySelector(sel);
+            const layerShapes = $("#layer-shapes");
+            const layerEdges = $("#layer-connectors");
+
+            const A = { id: "A", x: 100, y: 120, w: 80, h: 60, ports: [{ id: "pE", relx: 1, rely: 0.5, side: "E" }] };
+            const B = { id: "B", x: 380, y: 220, w: 80, h: 60, ports: [{ id: "pW", relx: 0, rely: 0.5, side: "W" }] };
+            const E = { id: "E1", a: { node: A, port: A.ports[0] }, b: { node: B, port: B.ports[0] } };
+
+            function gNode(n) {
+                const g = document.createElementNS(svgNS, "g");
+                g.classList.add("node");
+                g.dataset.id = n.id;
+                g.setAttribute("transform", `translate(${n.x},${n.y})`);
+                const r = document.createElementNS(svgNS, "rect");
+                r.setAttribute("width", n.w);
+                r.setAttribute("height", n.h);
+                r.setAttribute("rx", 8);
+                r.setAttribute("ry", 8);
+                r.setAttribute("fill", "#eef");
+                const t = document.createElementNS(svgNS, "text");
+                t.textContent = n.id;
+                t.setAttribute("x", n.w / 2);
+                t.setAttribute("y", n.h / 2);
+                t.setAttribute("text-anchor", "middle");
+                t.setAttribute("dominant-baseline", "middle");
+                g.append(r, t);
+                return g;
+            }
+            function portAbs(n, p) {
+                return { x: n.x + p.relx * n.w, y: n.y + p.rely * n.h };
+            }
+
+            const gA = gNode(A);
+            const gB = gNode(B);
+            layerShapes.append(gA, gB);
+
+            const path = document.createElementNS(svgNS, "path");
+            path.classList.add("edge");
+            layerEdges.append(path);
+
+            function routeOrthogonal(e) {
+                const a = portAbs(e.a.node, e.a.port);
+                const b = portAbs(e.b.node, e.b.port);
+                // simple L route: go horizontal then vertical
+                const d = `M ${a.x} ${a.y} L ${b.x} ${a.y} L ${b.x} ${b.y}`;
+                path.setAttribute("d", d);
+            }
+            routeOrthogonal(E);
+
+            // drag
+            let drag = null;
+            function onDown(evt) {
+                const g = evt.target.closest(".node");
+                if (!g) return;
+                const id = g.dataset.id;
+                const n = id === "A" ? A : B;
+                drag = { n, startX: evt.clientX, startY: evt.clientY, ox: n.x, oy: n.y };
+                window.addEventListener("mousemove", onMove);
+                window.addEventListener("mouseup", onUp);
+            }
+            function onMove(evt) {
+                if (!drag) return;
+                const dx = evt.clientX - drag.startX,
+                    dy = evt.clientY - drag.startY;
+                drag.n.x = drag.ox + dx;
+                drag.n.y = drag.oy + dy;
+                const g = drag.n === A ? gA : gB;
+                g.setAttribute("transform", `translate(${drag.n.x},${drag.n.y})`);
+                routeOrthogonal(E);
+            }
+            function onUp() {
+                drag = null;
+                window.removeEventListener("mousemove", onMove);
+                window.removeEventListener("mouseup", onUp);
+            }
+            document.addEventListener("mousedown", onDown);
+        </script>
+    </body>
+</html>
